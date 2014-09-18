@@ -130,6 +130,17 @@ gradientDescent f x0 = go x0 fx0 xgx0 0.1 (0 :: Int)
 --
 -- It uses reverse mode automatic differentiation to compute the gradient
 -- The learning rate is constant through out, and is set to 0.001
+--
+-- Example:
+--
+-- errorFunction is a simple squared loss error, of a univariate linear regression problem
+-- >>> let errorFunction (y:x:[]) (t0:t1:[]) = ((auto y) - (t0 + t1 * (auto x))) ^ 2
+-- >>> let sgd = stochasticGradientDescent errorFunction ([[1,2],[3,1]] :: [[Float]])
+-- >>> sgd [1,1] !! 4 -- theta after (4+1) iterations with initial theta of [1,1]
+-- [0.9921469,0.9802301]
+-- >>> sgd [0,0] !! 10
+-- [4.076492e-2,5.1941305e-2]
+--
 stochasticGradientDescent :: (Traversable f, Fractional a, Ord a) 
   => (forall s. Reifies s Tape => f (Scalar a) -> f (Reverse s a) -> Reverse s a) 
   -> [f (Scalar a)]
